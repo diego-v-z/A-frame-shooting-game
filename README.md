@@ -39,3 +39,13 @@ const shootCollided = event => {
 ```
 Esta es una funcióna a modo de prueba para ver si se ejecuta correctamente en la consola. Nuestra función responde correctamente, así que ahora la definimos:
 
+```
+const shootCollided = event => {
+  if (event.detail.body.el.id === 'floor') {
+    console.log("Dispara al suelo!");
+    event.detail.target.el.removeEventListener('collide', shootCollided);
+    myScene.removeChild(event.detail.target.el);
+  }
+}
+```
+Lo que hicimos arriba fue definir qué sucederá si la bala colisiona contra nuestro "suelo". Esto se hace por dos motivos: 1)porque nuestro objetivo no es el suelo, sino el objeto geométrico, así que la bala simplemente desaparecerá si llega al suelo; 2) Delimitamos la cantidad de balas que van saliendo. Removemos tanto la acción como el elemento 'bala', evitando que nuestro juego VR no se ralentice.
