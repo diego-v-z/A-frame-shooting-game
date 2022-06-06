@@ -1,4 +1,4 @@
-# A-frame-shooting-game
+# A-frame juego de realidad virtual.
 ## Un juego the shooter efectuado con A-frame .
 
 - Este juego de tipo shooting consiste en una interfaz sencilla en que se utiliza un puntero para disparar a un objetivo ("target").
@@ -14,6 +14,17 @@ A medida que se apunta al objetivo, van surgiendo más niveles. A continuación 
 Para más detalles del uso de este componente, visitar el [siguiente enlace.](https://www.npmjs.com/package/aframe-environment-component)
 
 - Finalmente, para la configuración de la función 'Shooting' se utilizó la librería de [CodeChangers.](https://codechangers.com/lessons/vr/adding_shooting/), con el fin de ahorrarnos tiempo en la elaboración del puntero, la cámara y las variables predeterminadas ('myScene', 'myCamera', etc.).
+
+**2. Configuración de tecla para ejecutar "Shoot"**
+
+- Para que podamos disparar la bala, efectuaremos una función para configurar una tecla. Nos basaremos en la lista `KeyboardEvent.KeyCode` de la [API de MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode). La función será la siguiente:
+```JavaScript
+document.onkeydown = event => {
+  if (event.which == 32) {
+    shoot();
+  } else if (event.which == 67)
+};
+```
 
 **2. ELABORACIÓN DE LA COLISIÓN ENTRE BALA Y EL OBJETO**
 
@@ -56,7 +67,7 @@ else if (event.detail.body.el.className === 'target') {
 ```
 Con lo cual el 'collision detection' para el target principal está listo.
 
-**3. Configuración de los siguientes objetivos.**
+**3. Configuración de los siguientes niveles y objetivos.**
 
 - Ahora queremos que el objetivo y la bala desaparezcan una vez disparemos. para eso basta con añadir a nuestra función lo siguiente:
 ```JavaScript
@@ -64,10 +75,14 @@ Con lo cual el 'collision detection' para el target principal está listo.
     myScene.removeChild(event.detail.target.el); //Para remover el objetivo.
     myScene.removeChild(event.detail.body.el); //Para remover la bala.
 ```
-- Luego, que comienzen a aparecer los nuevos objetivos que representarán los siguientes niveles. Para ello usaremos `document.querySelectorAll`. Este selector Query nos permitirá usar el selector de nuestro elemento en el HTML, como si se tratara de un selector CSS:
+- Luego, que comienzen a aparecer los nuevos objetivos que representarán los siguientes niveles. Para eso, en primer lugar, usaremos `document.querySelectorAll`. Este selector Query nos permitirá usar el selector de nuestro elemento en el HTML, como si se tratara de un selector CSS:
 ```JavaScript
-//'.length === 0' será el selector Query a utilizar para definir cuando destruyamos todos los objetivos y ganemos la partida.
+//'.length === 0' será el selector Query a utilizar para definir cuando destruyamos todos los objetivos y ganemos la partida para pasar al siguiente nivel.
 if (document.querySelectorAll('.target').length === 0) { 
     console.log("Has ganado!");
 ```
+- Para la elaboración de los siguientes niveles simplemente se efectuaron más copias de los objetos geométricos y se crearon otras hojas HTML. Así, al completar un nivel (cuando se hayan destruido todos los objetivos), se pasa al siguiente nivel. Esto se logra de la siguiente manera:
 
+**a)** Se agrega la página del siguiente nivel al final de nuestro HTML. Para el primer nivel, por ejemplo, añadiremos `<script>nextLevel = 'level2.html';</script>` en index.html. Esto se debe repetir para las hojas que iremos añadiendo (level2.html, level3.html, etc.).
+
+**b)** Se agrega `let nextLevel = 'index.html';` al inicio de nuestro `script.js`. Esta variable permitirá ejecutar el siguiente nivel una vez se complete. `index.html` es el primer nivel por defecto. 
